@@ -28,9 +28,21 @@ export default function Home() {
 
   return (
     <div className="grid items-center justify-items-center min-h-screen p-20 ">
-      <audio ref={hourRef} src={"/hour.aac"} preload="metadata" />
-      <audio ref={quarterRef} src={"/quarter.aac"} preload="metadata" />
-      <audio ref={minuteRef} src={"/minute.aac"} preload="metadata" />
+      <audio
+        ref={hourRef}
+        src={"/minute-repeater-online/hour.aac"}
+        preload="metadata"
+      />
+      <audio
+        ref={quarterRef}
+        src={"/minute-repeater-online/quarter.aac"}
+        preload="metadata"
+      />
+      <audio
+        ref={minuteRef}
+        src={"/minute-repeater-online/minute.aac"}
+        preload="metadata"
+      />
       <div
         onClick={playAudio}
         className="rounded-full border border-solid border-transparent flex items-center justify-center bg-foreground text-background text-sm h-10 px-4"
