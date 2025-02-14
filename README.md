@@ -14,6 +14,6 @@ npm i
 npm run dev
 ```
 
-## Credits
+## Acknowledgment
 
 The audios are extracted from [Youtube - Sound of a Patek Philippe Minute Repeater Watch](https://youtu.be/MZmZO--aotI?si=fQUJeSPrFS9O8Hc1)
