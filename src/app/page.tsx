@@ -1,15 +1,34 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
-  const hourRef = useRef<HTMLAudioElement>(null);
-  const quarterRef = useRef<HTMLAudioElement>(null);
-  const minuteRef = useRef<HTMLAudioElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
-  const listRef = useRef<string[]>(["hour", "hour"]);
+  const [src, setSrc] = useState<string>();
+  const [hourBuffer, setHourBuffer] = useState<ArrayBuffer>();
+  const [quarterBuffer, setQuarterBuffer] = useState<ArrayBuffer>();
+  const [minuteBuffer, setMinuteBuffer] = useState<ArrayBuffer>();
 
-  const playAudio = () => {
+  useEffect(() => {
+    fetch("/minute-repeater-online/hour.aac").then((res) =>
+      res.arrayBuffer().then(setHourBuffer)
+    );
+    fetch("/minute-repeater-online/quarter.aac").then((res) =>
+      res.arrayBuffer().then(setQuarterBuffer)
+    );
+    fetch("/minute-repeater-online/minute.aac").then((res) =>
+      res.arrayBuffer().then(setMinuteBuffer)
+    );
+  }, []);
+
+  const playAudio = async () => {
+    if (!hourBuffer || !quarterBuffer || !minuteBuffer) return;
+
+    if (src) {
+      URL.revokeObjectURL(src);
+    }
+
     const date = new Date();
 
     let hour = date.getHours();
@@ -19,69 +38,58 @@ export default function Home() {
 
     const minute = date.getMinutes() % 15;
 
-    const list = [];
+    const u8ArrayLength =
+      hourBuffer.byteLength * hour +
+      quarterBuffer.byteLength * quarter +
+      minuteBuffer.byteLength * minute;
 
-    for (let i = 0; i < hour - 1; i++) {
-      list.push("hour");
+    const combinedBuffer = new Uint8Array(u8ArrayLength);
+
+    let pos = 0;
+    for (let i = 0; i < hour; i++) {
+      combinedBuffer.set(new Uint8Array(hourBuffer), pos);
+      pos += hourBuffer.byteLength;
     }
     for (let i = 0; i < quarter; i++) {
-      list.push("quarter");
+      combinedBuffer.set(new Uint8Array(quarterBuffer), pos);
+      pos += quarterBuffer.byteLength;
     }
     for (let i = 0; i < minute; i++) {
-      list.push("minute");
+      combinedBuffer.set(new Uint8Array(minuteBuffer), pos);
+      pos += minuteBuffer.byteLength;
     }
 
-    listRef.current = list;
-    hourRef.current?.play();
-  };
+    const blob = new Blob([combinedBuffer], {
+      type: "audio/aac",
+    });
 
-  const onAudioEnd = () => {
-    const [first, ...other] = listRef.current;
-    if (first) {
-      switch (first) {
-        case "hour":
-          hourRef.current?.play();
-          break;
-        case "quarter":
-          quarterRef.current?.play();
-          break;
-        case "minute":
-          minuteRef.current?.play();
-          break;
-        default:
-          break;
-      }
+    const url = URL.createObjectURL(blob);
 
-      listRef.current = other;
+    setSrc(url);
+
+    if (audioRef.current) {
+      audioRef.current.onloadeddata = () => {
+        audioRef.current?.play();
+      };
     }
   };
 
   return (
     <div className="grid items-center justify-items-center min-h-screen p-20 ">
-      <audio
-        ref={hourRef}
-        src={"/minute-repeater-online/hour.aac"}
-        preload="metadata"
-        onEnded={onAudioEnd}
-      />
-      <audio
-        ref={quarterRef}
-        src={"/minute-repeater-online/quarter.aac"}
-        preload="metadata"
-        onEnded={onAudioEnd}
-      />
-      <audio
-        ref={minuteRef}
-        src={"/minute-repeater-online/minute.aac"}
-        preload="metadata"
-        onEnded={onAudioEnd}
-      />
+      <audio ref={audioRef} src={src} />
       <div
         onClick={playAudio}
         className="rounded-full border border-solid border-transparent flex items-center justify-center bg-foreground text-background text-sm h-10 px-4"
       >
-        Play now
+        {hourBuffer && quarterBuffer && minuteBuffer ? "Play now" : "Loading.."}
       </div>
+      <iframe
+        src="https://ghbtns.com/github-btn.html?user=Cygra&repo=minute-repeater-online&type=star&count=true&size=large"
+        width="170"
+        height="30"
+        title="GitHub"
+        className={"fixed top-2 left-2 z-50"}
+      />
     </div>
   );
 }
