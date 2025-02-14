@@ -31,7 +31,7 @@ export default function Home() {
 
     const date = new Date();
 
-    let hour = date.getHours();
+    let hour = date.getHours() % 12;
     if (hour === 0) hour = 12;
 
     const quarter = Math.floor(date.getMinutes() / 15);
