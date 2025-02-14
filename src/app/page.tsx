@@ -69,7 +69,7 @@ export default function Home() {
 
     if (audioRef.current) {
       audioRef.current.src = url;
-      audioRef.current?.play();
+      audioRef.current.play();
     }
   };
 
