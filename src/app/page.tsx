@@ -68,15 +68,14 @@ export default function Home() {
     setSrc(url);
 
     if (audioRef.current) {
-      audioRef.current.onloadeddata = () => {
-        audioRef.current?.play();
-      };
+      audioRef.current.src = url;
+      audioRef.current?.play();
     }
   };
 
   return (
     <div className="grid items-center justify-items-center min-h-screen p-20 ">
-      <audio ref={audioRef} src={src} />
+      <audio ref={audioRef} />
       <div
         onClick={playAudio}
         className="rounded-full border border-solid border-transparent flex items-center justify-center bg-foreground text-background text-sm h-10 px-4"
