@@ -6,6 +6,10 @@ Enjoy the pleasure of minute repeater online!
 
 https://en.wikipedia.org/wiki/Repeater_(horology)
 
+## How To Tell The Time From Minute Repeater
+
+https://youtu.be/roRceZjwnS8?si=2lNcZ4pG8o1onJWf
+
 ## Development
 
 ```bash
