@@ -2,6 +2,8 @@
 
 Enjoy the pleasure of minute repeater online!
 
+<img width="1440" height="778" alt="image" src="https://github.com/user-attachments/assets/3e799ddf-f146-40c1-94b4-fa040f02d2c9" />
+
 ## What is minute repeater?
 
 https://en.wikipedia.org/wiki/Repeater_(horology)
