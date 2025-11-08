@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Clock from "@/components/clock-05";
 
 export default function Home() {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -9,42 +10,6 @@ export default function Home() {
   const [hourBuffer, setHourBuffer] = useState<ArrayBuffer>();
   const [quarterBuffer, setQuarterBuffer] = useState<ArrayBuffer>();
   const [minuteBuffer, setMinuteBuffer] = useState<ArrayBuffer>();
-
-  const [secondDeg, setSecondDeg] = useState(0);
-  const [minuteDeg, setMinuteDeg] = useState(0);
-  const [hourDeg, setHourDeg] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const date = new Date();
-      setSecondDeg(getSecondDeg(date));
-      setMinuteDeg(getMinuteDeg(date));
-      setHourDeg(getHourDeg(date));
-    }, 200);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-
-  const getSecondDeg = (d: Date) => {
-    const second = d.getSeconds();
-    const millisec = d.getMilliseconds();
-    return Math.floor(((second + millisec / 1000) * 6) % 360);
-  };
-
-  const getMinuteDeg = (d: Date) => {
-    const second = d.getSeconds();
-    const minute = d.getMinutes();
-    return Math.floor(((minute + second / 60) * 6) % 360);
-  };
-
-  const getHourDeg = (d: Date) => {
-    const second = d.getSeconds();
-    const minute = d.getMinutes();
-    const hour = d.getHours() % 12;
-    return Math.floor(((hour + minute / 60 + second / 3600) * 30) % 360);
-  };
 
   useEffect(() => {
     fetch("/minute-repeater-online/hour.aac").then((res) =>
@@ -112,59 +77,7 @@ export default function Home() {
   return (
     <div className="grid items-center justify-items-center min-h-screen p-20 ">
       <audio ref={audioRef} />
-      <div
-        className={`
-          rounded-full w-[50vw] h-[50vw] bg-foreground text-background
-          max-w-96 max-h-96 relative
-        `}
-      >
-        {new Array(12).fill(1).map((_, ind) => (
-          <div
-            className={`w-1 h-[50vw] max-h-96 absolute top-0 left-[50%] translate-x-[-50%]`}
-            key={ind}
-            style={{ transform: `rotate(${ind * 30}deg)` }}
-          >
-            <div
-              className={`absolute top-0 bottom-[96%] left-0 right-0 bg-background`}
-            />
-          </div>
-        ))}
-        {new Array(60).fill(1).map((_, ind) => (
-          <div
-            className={`w-0.5 h-[50vw] max-h-96 absolute top-0 left-[50%] translate-x-[-50%]`}
-            key={ind}
-            style={{ transform: `rotate(${ind * 6}deg)` }}
-          >
-            <div
-              className={`absolute top-0 bottom-[98%] left-0 right-0 bg-background`}
-            />
-          </div>
-        ))}
-        <div
-          className={`w-1 h-[50vw] max-h-96 absolute top-0 left-[50%] translate-x-[-50%]`}
-          style={{ transform: `rotate(${hourDeg}deg)` }}
-        >
-          <div
-            className={`absolute top-8 bottom-[48%] left-0 right-0 bg-background`}
-          />
-        </div>
-        <div
-          className={`w-1 h-[50vw] max-h-96 absolute top-0 left-[50%] translate-x-[-50%]`}
-          style={{ transform: `rotate(${minuteDeg}deg)` }}
-        >
-          <div
-            className={`absolute top-4 bottom-[45%] left-0 right-0 bg-background`}
-          />
-        </div>
-        <div
-          className={`w-0.5 h-[50vw] max-h-96 absolute top-0 left-[50%] translate-x-[-50%]`}
-          style={{ transform: `rotate(${secondDeg}deg)` }}
-        >
-          <div
-            className={`absolute top-2 bottom-[45%] left-0 right-0 bg-background`}
-          />
-        </div>
-      </div>
+      <Clock />
       <div
         onClick={playAudio}
         className={`
@@ -177,7 +90,11 @@ export default function Home() {
           : "Loading.."}
       </div>
       <div className={"fixed top-2 left-2 right-2 z-50 flex items-center"}>
-        <div className={"flex-1 underline decoration-wavy"}>
+        <div
+          className={
+            "flex-1 text-foreground hover:text-muted-foreground text-xl font-semibold sm:text-xl"
+          }
+        >
           Minute Repeater Online
         </div>
         <iframe
