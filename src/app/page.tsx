@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Clock from "@/components/clock-05";
+import dynamic from "next/dynamic";
+
+const Clock = dynamic(() => import("@/components/clock-05"), { ssr: false });
 
 export default function Home() {
   const audioRef = useRef<HTMLAudioElement>(null);
